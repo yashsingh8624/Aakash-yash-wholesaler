@@ -1,0 +1,106 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #fff5f5; /* Light Red Background */
+    color: #330000;
+}
+ 
+/* Header */
+header {
+    background: #b30000; /* Dark Red */
+    color: white;
+    padding: 70px 20px;
+    text-align: center;
+    border-bottom: 6px solid #ff0000;
+}
+ 
+.btn {
+    background: #ffcccc; 
+    color: #b30000;
+    padding: 12px 25px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: bold;
+    border: 2px solid #b30000;
+}
+ 
+/* Section Titles */
+h2 {
+    color: #b30000;
+    margin-bottom: 15px;
+}
+ 
+/* About / Product / Contact Sections */
+.about, .products, .contact {
+    padding: 40px 20px;
+    text-align: center;
+    background: #ffe6e6; /* Light Red Panel */
+    margin: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px #ffb3b3;
+}
+ 
+/* Product Grid */
+.product-grid {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+ 
+.product {
+    background: #ffffff;
+    padding: 20px;
+    width: 250px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 12px #ff9999;
+    border: 2px solid #ffcccc;
+    transition: 0.3s;
+}
+ 
+.product:hover {
+    transform: scale(1.04);
+    box-shadow: 0px 0px 15px #ff6666;
+}
+ 
+.product img {
+    width: 100%;
+    border-radius: 6px;
+    border: 2px solid #ffcccc;
+}
+ 
+/* Contact Section */
+.contact p {
+    font-size: 18px;
+    margin: 8px 0;
+}
+ 
+/* Footer */
+footer {
+    background: #800000;
+    color: white;
+    text-align: center;
+    padding: 15px;
+    margin-top: 30px;
+    border-top: 3px solid #ff3333;
+}
+ 
+/* WhatsApp Floating Button */
+.whatsapp-float {
+    position: fixed;
+    width: 60px;
+    height: 60px;
+    bottom: 20px;
+    right: 20px;
+    background: white;
+    border-radius: 50%;
+    box-shadow: 0 0 10px #ff6666;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+}
+ 
+.whatsapp-float img {
+    width: 40px;
+}
