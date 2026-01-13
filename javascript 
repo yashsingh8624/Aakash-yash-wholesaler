@@ -1,0 +1,270 @@
+// Global variables
+let cart = [];
+let products = [
+    {
+        id: 1,
+        name: "स्टाइलिश कुर्ता",
+        price: 1299,
+        images: ["data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 250'><rect fill='%23ff6b6b' width='300' height='250'/><text x='150' y='125' text-anchor='middle' font-size='20' fill='white'>Kurta 1</text></svg>"],
+        description: "Traditional kurta with modern design"
+    },
+    {
+        id: 2,
+        name: "जींस पैंट",
+        price: 899,
+        images: ["data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 250'><rect fill='%234ecdc4' width='300' height='250'/><text x='150' y='125' text-anchor='middle' font-size='20' fill='white'>Jeans 1</text></svg>"],
+        description: "Comfortable and stylish jeans"
+    },
+    {
+        id: 3,
+        name: "सूट सेट",
+        price: 2499,
+        images: ["data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 250'><rect fill='%23ffe66d' width='300' height='250'/><text x='150' y='125' text-anchor='middle' font-size='20' fill='black'>Suit 1</text></svg>"],
+        description: "Complete formal suit set"
+    }
+];
+
+// Initialize the page
+document.addEventListener('DOMContentLoaded', function() {
+    displayProducts();
+    updateCartCount();
+});
+
+// Product form submission
+document.getElementById('productForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const name = document.getElementById('productName').value;
+    const price = parseFloat(document.getElementById('productPrice').value);
+    const description = document.getElementById('productDescription').value;
+    const imageFiles = document.getElementById('productImages').files;
+    
+    if (imageFiles.length === 0) {
+        alert('कृपया कम से कम एक फोटो चुनें!');
+        return;
+    }
+    
+    const newProduct = {
+        id: products.length + 1,
+        name: name,
+        price: price,
+        images: [],
+        description: description
+    };
+    
+    // Convert images to base64
+    Array.from(imageFiles).forEach(file => {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            newProduct.images.push(e.target.result);
+            if (newProduct.images.length === imageFiles.length) {
+                products.push(newProduct);
+                displayProducts();
+                document.getElementById('productForm').reset();
+                alert('प्रोडक्ट सफलतापूर्वक जोड़ा गया!');
+            }
+        };
+        reader.readAsDataURL(file);
+    });
+});
+
+// Display products
+function displayProducts() {
+    const productsGrid = document.getElementById('productsGrid');
+    productsGrid.innerHTML = '';
+    
+    products.forEach(product => {
+        const productCard = createProductCard(product);
+        productsGrid.appendChild(productCard);
+    });
+}
+
+// Create product card
+function createProductCard(product) {
+    const card = document.createElement('div');
+    card.className = 'product-card';
+    
+    const imagesHtml = product.images.map((img, index) => 
+        `<img src="${img}" alt="${product.name}" class="product-image ${index === 0 ? 'active' : ''}">`
+    ).join('');
+    
+    const dotsHtml = product.images.map((_, index) => 
+        `<span class="image-dot ${index === 0 ? 'active' : ''}" onclick="changeImage(${product.id}, ${index})"></span>`
+    ).join('');
+    
+    card.innerHTML = `
+        <div class="product-images">
+            ${imagesHtml}
+            <div class="image-nav">${dotsHtml}</div>
+        </div>
+        <div class="product-info">
+            <h3 class="product-name">${product.name}</h3>
+            <p class="product-price">₹${product.price}</p>
+            <p class="product-description">${product.description}</p>
+            <button class="add-to-cart-btn" onclick="addToCart(${product.id})">
+                <i class="fas fa-shopping-cart"></i> कार्ट में जोड़ें
+            </button>
+        </div>
+    `;
+    
+    return card;
+}
+
+// Change product image
+function changeImage(productId, imageIndex) {
+    const product = products.find(p => p.id === productId);
+    if (!product) return;
+    
+    const productCard = document.querySelector(`[onclick*="${productId}"]`).closest('.product-card');
+    const images = productCard.querySelectorAll('.product-image');
+    const dots = productCard.querySelectorAll('.image-dot');
+    
+    images.forEach((img, index) => {
+        img.classList.toggle('active', index === imageIndex);
+    });
+    
+    dots.forEach((dot, index) => {
+        dot.classList.toggle('active', index === imageIndex);
+    });
+}
+
+// Add to cart function
+function addToCart(productId) {
+    const product = products.find(p => p.id === productId);
+    if (!product) return;
+    
+    const existingItem = cart.find(item => item.id === productId);
+    
+    if (existingItem) {
+        existingItem.quantity += 1;
+    } else {
+        cart.push({
+            ...product,
+            quantity: 1
+        });
+    }
+    
+    updateCart();
+    showNotification('प्रोडक्ट कार्ट में जोड़ा गया!');
+}
+
+// Update cart
+function updateCart() {
+    updateCartCount();
+    displayCartItems();
+    updateCartTotal();
+}
+
+// Update cart count
+function updateCartCount() {
+    const cartCount = document.querySelector('.cart-count');
+    const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+    cartCount.textContent = totalItems;
+}
+
+// Display cart items
+function displayCartItems() {
+    const cartItems = document.getElementById('cartItems');
+    cartItems.innerHTML = '';
+    
+    if (cart.length === 0) {
+        cartItems.innerHTML = '<p style="text-align: center; color: #666;">कार्ट खाली है</p>';
+        return;
+    }
+    
+    cart.forEach(item => {
+        const cartItem = document.createElement('div');
+        cartItem.className = 'cart-item';
+        cartItem.innerHTML = `
+            <div class="cart-item-info">
+                <h4>${item.name}</h4>
+                <p>₹${item.price}</p>
+            </div>
+            <div class="quantity-controls">
+                <button class="quantity-btn" onclick="updateQuantity(${item.id}, -1)">-</button>
+                <span>${item.quantity}</span>
+                <button class="quantity-btn" onclick="updateQuantity(${item.id}, 1)">+</button>
+                <button class="remove-btn" onclick="removeFromCart(${item.id})">हटाएं</button>
+            </div>
+        `;
+        cartItems.appendChild(cartItem);
+    });
+}
+
+// Update quantity
+function updateQuantity(productId, change) {
+    const item = cart.find(item => item.id === productId);
+    if (!item) return;
+    
+    item.quantity += change;
+    
+    if (item.quantity <= 0) {
+        removeFromCart(productId);
+    } else {
+        updateCart();
+    }
+}
+
+// Remove from cart
+function removeFromCart(productId) {
+    cart = cart.filter(item => item.id !== productId);
+    updateCart();
+}
+
+// Update cart total
+function updateCartTotal() {
+    const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    document.getElementById('cartTotal').textContent = total.toFixed(2);
+}
+
+// Toggle cart modal
+function toggleCart() {
+    const modal = document.getElementById('cartModal');
+    modal.style.display = modal.style.display === 'block' ? 'none' : 'block';
+}
+
+// Scroll to products
+function scrollToProducts() {
+    document.getElementById('products').scrollIntoView({ behavior: 'smooth' });
+}
+
+// Show notification
+function showNotification(message) {
+    const notification = document.createElement('div');
+    notification.style.cssText = `
+        position: fixed;
+        top: 100px;
+        right: 20px;
+        background: #4CAF50;
+        color: white;
+        padding: 1rem 2rem;
+        border-radius: 5px;
+        z-index: 3000;
+        animation: slideIn 0.3s ease;
+    `;
+    notification.textContent = message;
+    
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        notification.remove();
+    }, 3000);
+}
+
+// Close cart modal when clicking outside
+window.onclick = function(event) {
+    const modal = document.getElementById('cartModal');
+    if (event.target === modal) {
+        modal.style.display = 'none';
+    }
+}
+
+// Add CSS animation
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes slideIn {
+        from { transform: translateX(100%); }
+        to { transform: translateX(0); }
+    }
+`;
+document.head.appendChild(style);
