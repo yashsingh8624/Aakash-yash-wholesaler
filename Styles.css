@@ -9,6 +9,11 @@ body {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     overflow: hidden;
     position: relative;
+    touch-action: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
 #gameContainer {
@@ -23,6 +28,9 @@ body {
     left: 0;
     background: #2a2a3e;
     border: 2px solid #4a4a6e;
+    display: block;
+    width: 100%;
+    height: 100%;
 }
 
 #gameUI {
@@ -42,6 +50,7 @@ body {
     padding: 8px 12px;
     border-radius: 8px;
     backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
 }
 
 #leaderboard {
@@ -49,7 +58,10 @@ body {
     padding: 12px;
     border-radius: 10px;
     backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
     min-width: 200px;
+    max-height: 200px;
+    overflow-y: auto;
 }
 
 #leaderboard h3 {
@@ -68,48 +80,10 @@ body {
     padding: 2px 0;
 }
 
-#controls {
-    position: absolute;
-    bottom: 20px;
-    left: 20px;
-    z-index: 10;
-}
-
-#joystickContainer {
-    position: relative;
-    width: 120px;
-    height: 120px;
-    margin-bottom: 20px;
-}
-
-#joystick {
-    width: 100%;
-    height: 100%;
-    background: rgba(255,255,255,0.2);
-    border: 3px solid rgba(255,255,255,0.4);
-    border-radius: 50%;
-    position: relative;
-    cursor: pointer;
-    backdrop-filter: blur(5px);
-}
-
-#joystick::before {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 40px;
-    height: 40px;
-    background: rgba(255,255,255,0.6);
-    border-radius: 50%;
-    transform: translate(-50%, -50%);
-    transition: all 0.1s ease;
-}
-
 #boostBtn {
-    position: absolute;
-    bottom: 20px;
-    right: 20px;
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
     width: 80px;
     height: 80px;
     background: linear-gradient(135deg, #ff6b6b, #ff8e53);
@@ -121,7 +95,8 @@ body {
     cursor: pointer;
     box-shadow: 0 4px 15px rgba(255,107,107,0.4);
     transition: all 0.2s ease;
-    z-index: 10;
+    z-index: 20;
+    touch-action: manipulation;
 }
 
 #boostBtn:hover {
@@ -144,18 +119,21 @@ body {
 }
 
 #gameOverScreen {
-    position: absolute;
+    position: fixed;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background: rgba(0,0,0,0.9);
+    background: rgba(0,0,0,0.95);
     color: white;
     padding: 40px;
     border-radius: 20px;
     text-align: center;
     z-index: 100;
     backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
     border: 2px solid rgba(255,255,255,0.2);
+    max-width: 90vw;
+    width: 400px;
 }
 
 #gameOverScreen h2 {
@@ -180,6 +158,7 @@ body {
     cursor: pointer;
     font-weight: bold;
     transition: all 0.3s ease;
+    touch-action: manipulation;
 }
 
 #restartBtn:hover {
@@ -189,22 +168,49 @@ body {
 
 @media (max-width: 768px) {
     #gameUI {
+        font-size: 16px;
+    }
+    
+    #scoreDisplay, #lengthDisplay {
+        font-size: 14px;
+        padding: 6px 10px;
+    }
+    
+    #leaderboard {
+        min-width: 160px;
+        padding: 10px;
+        font-size: 12px;
+    }
+    
+    #boostBtn {
+        width: 70px;
+        height: 70px;
+        font-size: 12px;
+        bottom: 20px;
+        right: 20px;
+    }
+    
+    #gameOverScreen {
+        width: 90vw;
+        padding: 30px 20px;
+    }
+    
+    #gameOverScreen h2 {
+        font-size: 28px;
+    }
+}
+
+@media (max-width: 480px) {
+    #gameUI {
+        top: 5px;
+        left: 5px;
         font-size: 14px;
     }
     
     #leaderboard {
-        min-width: 150px;
-        padding: 8px;
-    }
-    
-    #joystickContainer {
-        width: 100px;
-        height: 100px;
-    }
-    
-    #boostBtn {
-        width: 60px;
-        height: 60px;
-        font-size: 12px;
+        position: absolute;
+        top: 120px;
+        left: 5px;
+        min-width: 140px;
     }
 }
